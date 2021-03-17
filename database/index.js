@@ -3,16 +3,25 @@ const { Pool, Client } = require('pg')
 const pool = new Pool({
   user: 'postgres',
   host: 'localhost',
-  database: 'ratingsandreviews',
+  database: 'postgres',
   password: 'postgres',
   port: 5432,
 })
-pool.query('SELECT NOW()', (err, res) => {
-  console.log(err, res)
-  pool.end()
-})
 
 // DATABASE QUERY FUNCTIONS HERE:
+// SELECT NOW()
+// SELECT datname FROM pg_database;
+// SELECT * from information_schema.tables
+const testQuery = (req, res) => {
+  pool.query(`SELECT * FROM reviews;`)
+    .then((response) => {
+      console.log('SUCCESS!: ', response);
+      res.send(response);
+    }).catch((err) => {
+      console.error('issue with testQuery: ', err);
+      res.sendStatus(500);
+    })
+}
 
 // getRatings
 const getRatings = (product_id) => {
@@ -41,7 +50,18 @@ const postReview = (product_id, reviewObj) => {
 
 module.exports = {
   // export query functions here
+  testQuery,
   getRatings,
   getReviews,
   postReview,
 };
+
+
+// pool.query('SELECT NOW()', (err, res) => {
+//   if (err) {
+//     console.error(err);
+//   } else {
+//     console.log('response from DB: ', res);
+//   }
+//   pool.end()
+// })

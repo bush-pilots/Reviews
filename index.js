@@ -11,6 +11,7 @@ app.use(cors());
 app.use(express.json());
 // app.use(express.static(path.join(__dirname, '..', 'public')));
 
+app.get('/', queries.testQuery);
 // app.get('/ratings/:product_id', queries.getAll);
 // app.post('/api/cows', queries.create);
 // app.put('/api/cows/:id', queries.update);

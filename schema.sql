@@ -1,11 +1,11 @@
 -- Create table:
-DROP DATABASE IF EXISTS RatingsAndReviews;
+DROP DATABASE IF EXISTS ratingsandreviews;
 
-CREATE DATABASE RatingsAndReviews;
-
+CREATE DATABASE ratingsandreviews;
+USE ratingsandreviews;
 DROP TABLE IF EXISTS reviews;
 CREATE TABLE reviews(
-  review_id uuid,
+  review_id SERIAL PRIMARY KEY,
   product_id integer,
   rating smallint,
   recommend boolean,
@@ -13,8 +13,8 @@ CREATE TABLE reviews(
   summary varchar(200),
   reviewer_name varchar(25),
   body varchar(1000),
-  date date,
-  PRIMARY KEY (review_id));
+  date date
+);
 
 DROP TABLE IF EXISTS photos;
 CREATE TABLE photos(
@@ -39,6 +39,9 @@ CREATE TABLE characteristics(
   value decimal,
   PRIMARY KEY (id)
 );
+
+INSERT INTO reviews (product_id, rating, recommend, response, summary, reviewer_name, body)
+VALUES (88888, 4, true, 'response here', 'summary here', 'Scottland123', 'this is the body of my review');
 
 -- Copy CSV data, with appropriate munging:
 -- COPY land_registry_price_paid_uk FROM '/path/to/pp-complete.csv' with (format csv, encoding 'win1252', header false, null '', quote '"', force_null (postcode, saon, paon, street, locality, city, district));
