@@ -82,9 +82,30 @@ console.log('queryString: ', queryString);
   // updates the ratings meta info accordingly
 }
 
+const reportReview = (req, res) => {
+  console.log('req params: ', req.params);
+  const {review_id} = req.params;
+  console.log('review id is...', review_id);
+  // update the db at review_id
+  let queryString = `UPDATE reviews
+                     SET reported = true
+                     WHERE review_id=${review_id};`
+                     console.log('queryString');
+
+  pool.query(queryString)
+  .then((response) => {
+    console.log('db response for reported: ', response);
+    res.send(response);
+  }).catch((err) => {
+    console.log(err);
+    res.sendStatus(500);
+  })
+}
+
 module.exports = {
   testQuery,
   getRatings,
   getReviews,
   postReview,
+  reportReview
 };

@@ -7,7 +7,7 @@
 
 -- DROP TABLE IF EXISTS reviews CASCADE;
 -- CREATE TABLE reviews(
---   id SERIAL PRIMARY KEY,
+--   review_id SERIAL PRIMARY KEY,
 --   product_id integer,
 --   rating smallint,
 --   date date,
@@ -64,6 +64,8 @@ COPY characteristics_reviews FROM '/private/tmp/characteristic_reviews.csv' DELI
 --   recommended_true integer,
 --   recommended_false integer
 -- );
+
+-- DUMMY DATA:
 -- INSERT INTO reviews (product_id, rating, recommend, response, summary, reviewer_name, body)
 -- VALUES (88888, 4, true, 'response here', 'summary here', 'Scottland123', 'this is the body of my review');
 
