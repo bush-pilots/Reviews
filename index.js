@@ -16,6 +16,7 @@ app.get('/test', queries.testQuery);
 app.get('/reviews', queries.getReviews);
 app.post('/reviews', queries.postReview);
 app.put('/reviews/:review_id/report', queries.reportReview);
+app.put('/reviews/:review_id/helpful', queries.incrementHelpfulness);
 
 app.listen(PORT, () => {
   console.log(`Server listening at localhost:${PORT}!`);

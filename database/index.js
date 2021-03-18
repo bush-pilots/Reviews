@@ -83,18 +83,32 @@ console.log('queryString: ', queryString);
 }
 
 const reportReview = (req, res) => {
-  console.log('req params: ', req.params);
   const {review_id} = req.params;
-  console.log('review id is...', review_id);
-  // update the db at review_id
+
   let queryString = `UPDATE reviews
                      SET reported = true
                      WHERE review_id=${review_id};`
-                     console.log('queryString');
 
   pool.query(queryString)
   .then((response) => {
     console.log('db response for reported: ', response);
+    res.send(response);
+  }).catch((err) => {
+    console.log(err);
+    res.sendStatus(500);
+  })
+}
+
+const incrementHelpfulness = (req, res) => {
+  const {review_id} = req.params;
+
+  let queryString = `UPDATE reviews
+                     SET helpfulness = helpfulness + 1
+                     WHERE review_id=${review_id}
+                     RETURNING helpfulness;`
+
+  pool.query(queryString)
+  .then((response) => {
     res.send(response);
   }).catch((err) => {
     console.log(err);
@@ -107,5 +121,6 @@ module.exports = {
   getRatings,
   getReviews,
   postReview,
-  reportReview
+  reportReview,
+  incrementHelpfulness
 };
