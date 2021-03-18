@@ -9,11 +9,8 @@ const pool = new Pool({
 })
 
 // DATABASE QUERY FUNCTIONS HERE:
-// SELECT NOW()
-// SELECT datname FROM pg_database;
-// SELECT * from information_schema.tables
 const testQuery = (req, res) => {
-  pool.query(`SELECT * FROM reviews;`)
+  pool.query(`SELECT * FROM reviews WHERE id < 5;`)
     .then((response) => {
       console.log('SUCCESS!: ', response);
       res.send(response);
@@ -35,33 +32,59 @@ const getRatings = (product_id) => {
     // avg ____ rating (any other characteristic columns)
 }
 
-const getReviews = (product_id, count) => {
-  // should return 'count' number of review objects for the input product_id
+  // send back 'count' number of review for the requested product_id
+// may need to perform some sorting here down the road to optimize the reviews that are sent back to the client
+const getReviews = (req, res) => {
+  console.log('queries in request: ', req.query);
+  const product_id = req.query.product_id
+  const count = Number(req.query.count);
 
+  // query the database for 'count' number of reviews for the given product
+  const queryString = `SELECT * from reviews
+                       WHERE product_id=${product_id}
+                       ORDER BY review_id LIMIT ${count};`
 
-  // may need to perform some sorting here down the road to optimize the reviews that are sent back to the client
+  pool.query(queryString)
+  .then((response) => {
+    // returns an array of review objects
+    let reviews = response.rows;
+    reviews.forEach((review) => review.photos = [])
+    res.send(response.rows);
+  }).catch((err) => {
+    console.error(err);
+    res.sendStatus(500);
+  })
 }
 
-const postReview = (product_id, reviewObj) => {
-  // adds a row to the reviews table with information in the reviewObj
+// adds a row to the reviews table using data provided in client request object
+const postReview = (req, res) => {
+  reviewObj = req.body;
+  let fullDate = new Date();
+  reviewObj.date = fullDate.toISOString().slice(0, 10);
+  reviewObj.reported = false;
+  reviewObj.helpfulness = 0;
+  console.log('reviewObj: ', reviewObj);
+
+  const queryString = `INSERT INTO reviews (
+                          product_id, rating, date, summary, body, recommend, reported, reviewer_name, reviewer_email, helpfulness)
+                          VALUES (${reviewObj.product_id}, ${reviewObj.rating}, '${reviewObj.date}', '${reviewObj.summary}', '${reviewObj.body}', ${reviewObj.recommend}, ${reviewObj.reported}, '${reviewObj.name}', '${reviewObj.email}', ${reviewObj.helpfulness})
+                          RETURNING review_id;`
+
+console.log('queryString: ', queryString);
+  pool.query(queryString)
+  .then((response) => {
+    res.send(response);
+  }).catch((err) => {
+    console.error('there was an error in the insert query: ', err);
+    res.sendStatus(500);
+  });
 
   // updates the ratings meta info accordingly
 }
 
 module.exports = {
-  // export query functions here
   testQuery,
   getRatings,
   getReviews,
   postReview,
 };
-
-
-// pool.query('SELECT NOW()', (err, res) => {
-//   if (err) {
-//     console.error(err);
-//   } else {
-//     console.log('response from DB: ', res);
-//   }
-//   pool.end()
-// })
