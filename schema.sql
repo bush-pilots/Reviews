@@ -65,6 +65,11 @@ COPY characteristics_reviews FROM '/private/tmp/characteristic_reviews.csv' DELI
 --   recommended_false integer
 -- );
 
+-- INDEXES
+CREATE INDEX reviews_product_id_idx ON reviews (product_id);
+CREATE INDEX reviews_review_id ON reviews (review_id);
+CREATE INDEX characteristics_reviews_review_id_idx ON characteristics_reviews (review_id);
+
 -- DUMMY DATA:
 -- INSERT INTO reviews (product_id, rating, recommend, response, summary, reviewer_name, body)
 -- VALUES (88888, 4, true, 'response here', 'summary here', 'Scottland123', 'this is the body of my review');
