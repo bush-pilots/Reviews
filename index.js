@@ -12,6 +12,8 @@ app.use(cors());
 app.use(express.json());
 // app.use(express.static(path.join(__dirname, '..', 'public')));
 
+// TO-DO: redirect this root request to /reviews
+app.get('/', queries.getReviews);
 // this request will also include sort, page, and count query parameters
 app.get('/reviews', queries.getReviews);
 app.get('/reviews/meta', queries.calculateMeta);
