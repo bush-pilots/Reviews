@@ -29,9 +29,6 @@ CREATE TABLE photos(
   id SERIAL PRIMARY KEY,
   review_id integer,
   url varchar(500),
-  CONSTRAINT review_id
-      FOREIGN KEY(review_id)
-	  REFERENCES reviews(review_id)
 );
 
 CREATE TABLE characteristics(
@@ -45,13 +42,6 @@ CREATE TABLE characteristics_reviews(
   characteristic_id integer,
   review_id integer,
   value decimal,
-
-  CONSTRAINT review_id
-      FOREIGN KEY(review_id)
-	  REFERENCES reviews(review_id),
-  CONSTRAINT characteristic_id
-    FOREIGN KEY(characteristic_id)
-	REFERENCES characteristics(id)
 );
 
 CREATE TABLE ratings(
