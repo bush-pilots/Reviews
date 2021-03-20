@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
-// const queries = require('../database/index.js');
+const queries = require('./database/index.js');
 const morgan = require('morgan')('dev');
 const PORT = 3000;
 const app = express();
@@ -11,10 +11,12 @@ app.use(cors());
 app.use(express.json());
 // app.use(express.static(path.join(__dirname, '..', 'public')));
 
-// app.get('/api/cows', queries.getAll);
-// app.post('/api/cows', queries.create);
-// app.put('/api/cows/:id', queries.update);
-// app.delete('/api/cows/:id', queries.deleteCow);
+// this request will also include sort, page, and count query parameters
+app.get('/test', queries.testQuery);
+app.get('/reviews', queries.getReviews);
+app.post('/reviews', queries.postReview);
+app.put('/reviews/:review_id/report', queries.reportReview);
+app.put('/reviews/:review_id/helpful', queries.incrementHelpfulness);
 
 app.listen(PORT, () => {
   console.log(`Server listening at localhost:${PORT}!`);
