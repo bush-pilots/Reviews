@@ -31,7 +31,7 @@ CREATE TABLE photos(
   url varchar(500),
   CONSTRAINT review_id
       FOREIGN KEY(review_id)
-	  REFERENCES reviews(id)
+	  REFERENCES reviews(review_id)
 );
 
 CREATE TABLE characteristics(
@@ -61,10 +61,10 @@ CREATE TABLE ratings(
 );
 
 -- ON EC2 INSTANCE:
-COPY reviews FROM '/reviews.csv' DELIMITER ',' CSV HEADER;
-COPY photos FROM '/reviews_photos.csv' DELIMITER ',' CSV HEADER;
-COPY characteristics FROM '/characteristics.csv' DELIMITER ',' CSV HEADER;
-COPY characteristics_reviews FROM '/characteristic_reviews.csv' DELIMITER ',' CSV HEADER;
+COPY reviews FROM '/home/ubuntu/reviews.csv' DELIMITER ',' CSV HEADER;
+COPY photos FROM '/home/ubuntu/reviews_photos.csv' DELIMITER ',' CSV HEADER;
+COPY characteristics FROM '/home/ubuntu/characteristics.csv' DELIMITER ',' CSV HEADER;
+COPY characteristics_reviews FROM '/home/ubuntu/characteristic_reviews.csv' DELIMITER ',' CSV HEADER;
 
 -- ON LOCAL MACHINE:
 -- COPY reviews FROM '/private/tmp/reviews_' DELIMITER ',' CSV HEADER;
