@@ -48,7 +48,7 @@ CREATE TABLE characteristics_reviews(
 
   CONSTRAINT review_id
       FOREIGN KEY(review_id)
-	  REFERENCES reviews(id),
+	  REFERENCES reviews(review_id),
   CONSTRAINT characteristic_id
     FOREIGN KEY(characteristic_id)
 	REFERENCES characteristics(id)
