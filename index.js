@@ -13,7 +13,9 @@ app.use(express.json());
 // app.use(express.static(path.join(__dirname, '..', 'public')));
 
 // TO-DO: redirect this root request to /reviews
-app.get('/', queries.getReviews);
+app.get('/loaderio-8a777a900136f8afe024bcb0d95862c9', (req, res) => {
+  res.send('loaderio-8a777a900136f8afe024bcb0d95862c9');
+});
 // this request will also include sort, page, and count query parameters
 app.get('/reviews', queries.getReviews);
 app.get('/reviews/meta', queries.calculateMeta);
