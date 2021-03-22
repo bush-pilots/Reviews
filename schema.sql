@@ -44,14 +44,7 @@ CREATE TABLE characteristics_reviews(
   id SERIAL PRIMARY KEY,
   characteristic_id integer,
   review_id integer,
-  value decimal,
-
-  CONSTRAINT review_id
-      FOREIGN KEY(review_id)
-	  REFERENCES reviews(id),
-  CONSTRAINT characteristic_id
-    FOREIGN KEY(characteristic_id)
-	REFERENCES characteristics(id)
+  value decimal
 );
 
 CREATE TABLE ratings(
