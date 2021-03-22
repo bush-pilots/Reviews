@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan')('dev');
+var compression = require('compression')
 const path = require('path');
 const queries = require('./database/index.js');
 
@@ -9,6 +10,7 @@ const app = express();
 
 app.use(morgan);
 app.use(cors());
+app.use(compression());
 app.use(express.json());
 // app.use(express.static(path.join(__dirname, '..', 'public')));
 
