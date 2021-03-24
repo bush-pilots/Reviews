@@ -15,7 +15,6 @@ app.use(express.json());
 // app.use(express.static(path.join(__dirname, '..', 'public')));
 process.env.NODE_INV = 'production';
 
-// TO-DO: redirect this root request to /reviews
 app.get('/loaderio-8a777a900136f8afe024bcb0d95862c9', (req, res) => {
   res.send('loaderio-8a777a900136f8afe024bcb0d95862c9');
 });
