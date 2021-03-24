@@ -1,3 +1,5 @@
+/* eslint-disable no-restricted-syntax */
+/* eslint-disable guard-for-in */
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-console */
 /* eslint-disable camelcase */
@@ -10,19 +12,6 @@ const pool = new Pool({
   password: 'postgres',
   port: 5432,
 });
-
-const getRatings = (product_id) => {
-  /*
-    Should return the following information for the given product_id:
-      # of recommended_true ratings
-      # of recommended_false ratings
-      avg comfort rating
-      avg fit rating
-      avg size rating
-      avg width rating
-      avg ____ rating (any other characteristic columns)
-  */
-};
 
 // Sends to client a specified number of reviews for a specified product_id
 // Note: may need to perform some sorting here to optimize the reviews that are sent back
@@ -146,21 +135,15 @@ const incrementHelpfulness = (req, res) => {
     });
 };
 
-const calculateMeta = (req, res) => {
+const calculateMeta = async (req, res) => {
+  const returnObj = {};
   const { product_id } = req.query;
-
-  /* Function incomplete -ultimately needs to return an object with:
-      characteristics: {Fit: {…}, Length: {…}, Comfort: {…}, Quality: {…}},
-      product_id: "18112"
-      ratings: {4: "1", 5: "1"}
-      recommended: {true: "2"}
-  */
-  const returnObj = { product_id };
 
   const starMeta = {};
   const queries = [];
   const recommended = {};
 
+  // calculate starMeta
   for (let i = 5; i > 0; i -= 1) {
     queries.push(new Promise((resolve, reject) => {
       const queryString = `SELECT * FROM reviews
@@ -176,6 +159,7 @@ const calculateMeta = (req, res) => {
     }));
   }
 
+  // calculate recommended counts
   queries.push(new Promise((resolve, reject) => {
     const queryString = `SELECT COUNT(recommend)
                           FROM reviews
@@ -202,7 +186,49 @@ const calculateMeta = (req, res) => {
       });
   }));
 
+  // calculate characteristic averages for each characteristic of product
+  const getCharacteristicAverages = () => {
+    const charObj = {};
+    const namedCharObj = {};
+
+    queries.push(pool.query(`SELECT * FROM reviews WHERE product_id='${product_id}'`)
+      .then((response) => {
+        const reviews = response.rows;
+        return Promise.all(reviews.map((review) => pool.query(`SELECT characteristic_id, value FROM characteristics_reviews WHERE review_id=${review.review_id}`)
+          .then((joinRes) => {
+            joinRes.rows.forEach((row) => {
+              if (charObj[row.characteristic_id]) {
+                // eslint-disable-next-line max-len
+                charObj[row.characteristic_id] = (charObj[row.characteristic_id] + Number(row.value)) / 2;
+              } else {
+                charObj[row.characteristic_id] = Number(row.value);
+              }
+            });
+            const charQueries = [];
+            for (const key in charObj) {
+              charQueries.push(
+                pool.query(`SELECT id, name FROM characteristics WHERE id=${key}`),
+              );
+            }
+
+            return (Promise.all(charQueries).then((resolved) => {
+              for (let i = 0; i < resolved.length; i += 1) {
+                namedCharObj[resolved[i].rows[0].name] = {
+                  id: resolved[i].rows[0].id,
+                  value: charObj[resolved[i].rows[0].id],
+                };
+              }
+              returnObj.characteristics = namedCharObj;
+            }));
+          }).catch((err) => {
+            console.error(err);
+          })));
+      }));
+  };
+  getCharacteristicAverages();
+
   Promise.all(queries).then(() => {
+    returnObj.product_id = product_id;
     returnObj.ratings = starMeta;
     returnObj.recommended = recommended;
     res.send(returnObj);
@@ -210,7 +236,6 @@ const calculateMeta = (req, res) => {
 };
 
 module.exports = {
-  getRatings,
   getReviews,
   postReview,
   reportReview,
