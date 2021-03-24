@@ -41,7 +41,7 @@ CREATE TABLE characteristics_reviews(
   id SERIAL PRIMARY KEY,
   characteristic_id integer,
   review_id integer,
-  value decimal,
+  value decimal
 );
 
 CREATE TABLE ratings(
